@@ -14,7 +14,7 @@
 - **原作者**: Weifeng
 
 ### 本项目修改
-本版本是在原VideoCaptioner项目基础上进行修改的Linux适配版本：
+由于原项目只支持windows，本版本是在原VideoCaptioner项目基础上进行修改的Linux适配版本：
 
 - ✅ **完全适配Linux系统**: 移除了Windows依赖，完美支持Linux环境
 - ✅ **Faster Whisper Linux版本**: 下载功能已改为Linux专用的二进制版本
@@ -42,7 +42,7 @@
 - Linux操作系统（Ubuntu、CentOS、Debian等）
 - Python 3.8+
 - Python venv模块（用于创建虚拟环境）
-- FFmpeg（用于音视频处理）
+- FFmpeg（用于音视频处理，界面字幕预览渲染）
 
 ### 安装步骤
 
@@ -91,7 +91,7 @@ LLM大模型用于字幕段句、字幕优化、以及字幕翻译：
 
 | 配置项         | 说明 |
 | -------------- | ---- |
-| SiliconCloud   | [SiliconCloud官网](https://cloud.siliconflow.cn/i/onCHcaDx) |
+| SiliconCloud   | [SiliconCloud官网](https://cloud.siliconflow.cn/i/goCV1JVB) |
 | DeepSeek       | [DeepSeek官网](https://platform.deepseek.com) |
 | Ollama本地     | [Ollama官网](https://ollama.com) |
 | OpenAI兼容接口 | 支持其他服务商的API |
@@ -108,7 +108,7 @@ LLM大模型用于字幕段句、字幕优化、以及字幕翻译：
 本版本已适配Linux系统的Faster Whisper：
 
 - **下载方式**: 在软件"设置"→"Faster Whisper设置"→"管理模型"中一键下载
-- **程序版本**: 官方Linux二进制版本（CPU+GPU统一版本）
+- **程序版本**: Linux二进制版本（CPU+GPU统一版本）
 - **模型支持**: Tiny、Base、Small、Medium、Large-v1/v2/v3、Large-v3-turbo
 - **自动安装**: 下载后自动解压并设置可执行权限
 
