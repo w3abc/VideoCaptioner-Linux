@@ -46,18 +46,11 @@ from app.thread.modelscope_download_thread import ModelscopeDownloadThread
 # 在文件开头添加常量定义
 FASTER_WHISPER_PROGRAMS = [
     {
-        "label": "GPU（cuda） + CPU 版本",
-        "value": "faster-whisper-gpu.7z",
-        "type": "GPU",
-        "size": "1.35 GB",
-        "downloadLink": "https://modelscope.cn/models/bkfengg/whisper-cpp/resolve/master/Faster-Whisper-XXL_r245.2_windows.7z",
-    },
-    {
-        "label": "CPU版本",
-        "value": "faster-whisper.exe",
-        "type": "CPU",
-        "size": "78.7 MB",
-        "downloadLink": "https://modelscope.cn/models/bkfengg/whisper-cpp/resolve/master/whisper-faster.exe",
+        "label": "Linux版本（CPU + GPU）",
+        "value": "Faster-Whisper-XXL_r245.4_linux.7z",
+        "type": "LINUX",
+        "size": "1.54 GB",
+        "downloadLink": "https://github.com/Purfview/whisper-standalone-win/releases/download/Faster-Whisper-XXL/Faster-Whisper-XXL_r245.4_linux.7z",
     },
 ]
 
@@ -125,9 +118,8 @@ FASTER_WHISPER_MODELS = [
 def check_faster_whisper_exists() -> tuple[bool, list[str]]:
     """检查 faster-whisper 程序是否存在
 
-    检查以下两种情况:
-    1. bin目录下是否有 faster-whisper.exe
-    2. bin目录下是否有 Faster-Whisper-XXL/faster-whisper-xxl.exe
+    检查以下情况:
+    1. bin目录下是否有 Faster-Whisper-XXL/faster-whisper-xxl (Linux版本)
 
     Returns:
         tuple[bool, list[str]]: (是否存在程序, 已安装的版本列表)
@@ -135,13 +127,10 @@ def check_faster_whisper_exists() -> tuple[bool, list[str]]:
     bin_path = Path(BIN_PATH)
     installed_versions = []
 
-    # 检查 faster-whisper.exe(CPU版本)
-    if (bin_path / "faster-whisper.exe").exists():
-        installed_versions.append("CPU")
-
-    # 检查 Faster-Whisper-XXL/faster-whisper-xxl.exe(GPU版本)
-    xxl_path = bin_path / "Faster-Whisper-XXL" / "faster-whisper-xxl.exe"
+    # 检查 Faster-Whisper-XXL/faster-whisper-xxl (Linux版本，支持CPU+GPU)
+    xxl_path = bin_path / "Faster-Whisper-XXL" / "faster-whisper-xxl"
     if xxl_path.exists():
+        # Linux版本统一支持CPU和GPU
         installed_versions.extend(["GPU", "CPU"])
     installed_versions = list(set(installed_versions))
 
@@ -455,21 +444,14 @@ class FasterWhisperDownloadDialog(MessageBoxBase):
     def _on_program_download_finished(self, save_path):
         """程序下载完成处理"""
         try:
-            # 检查是否是 CPU 版本的直接下载
-            if save_path.endswith(".exe"):
-                # 如果是exe文件,重命名为faster-whisper.exe
-                os.rename(save_path, os.path.join(BIN_PATH, "faster-whisper.exe"))
-                self._finish_program_installation()
-            else:
-                # GPU 版本需要解压
-                self.progress_label.setText(self.tr("正在解压文件..."))
+            # Linux版本需要解压7z文件
+            self.progress_label.setText(self.tr("正在解压文件..."))
 
-                # 创建并启动解压线程
-                self.unzip_thread = UnzipThread(save_path, BIN_PATH)
-                self.unzip_thread.finished.connect(self._finish_program_installation)
-                self.unzip_thread.error.connect(self._on_unzip_error)
-                self.unzip_thread.start()
-                return  # 提前返回,等待解压完成
+            # 创建并启动解压线程
+            self.unzip_thread = UnzipThread(save_path, BIN_PATH)
+            self.unzip_thread.finished.connect(self._finish_program_installation)
+            self.unzip_thread.error.connect(self._on_unzip_error)
+            self.unzip_thread.start()
 
         except Exception as e:
             InfoBar.error(self.tr("安装失败"), str(e), duration=3000, parent=self)
@@ -632,14 +614,29 @@ class FasterWhisperDownloadDialog(MessageBoxBase):
 
     def _finish_program_installation(self):
         """完成程序安装"""
-        InfoBar.success(
-            self.tr("安装完成"),
-            self.tr("Faster Whisper 程序已安装成功"),
-            duration=3000,
-            parent=self,
-        )
-        self.accept()
-        self._cleanup_installation()
+        try:
+            # 设置Linux可执行文件权限
+            executable_path = os.path.join(BIN_PATH, "Faster-Whisper-XXL", "faster-whisper-xxl")
+            if os.path.exists(executable_path):
+                # 添加可执行权限
+                os.chmod(executable_path, 0o755)
+
+            InfoBar.success(
+                self.tr("安装完成"),
+                self.tr("Faster Whisper 程序已安装成功"),
+                duration=3000,
+                parent=self,
+            )
+            self.accept()
+        except Exception as e:
+            InfoBar.error(
+                self.tr("安装失败"),
+                self.tr(f"设置权限失败: {str(e)}"),
+                duration=3000,
+                parent=self,
+            )
+        finally:
+            self._cleanup_installation()
 
     def _on_unzip_error(self, error_msg):
         """处理解压错误"""

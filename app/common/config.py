@@ -165,7 +165,7 @@ class Config(QConfig):
     faster_whisper_program = ConfigItem(
         "FasterWhisper",
         "Program",
-        "faster-whisper-xxl.exe",
+        "faster-whisper-xxl",
     )
     faster_whisper_model = OptionsConfigItem(
         "FasterWhisper",
