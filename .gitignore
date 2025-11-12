@@ -31,3 +31,4 @@ venv/
 # 项目文档
 CLAUDE.md
 VideoCaptioner.desktop
+start-videocaptioner.sh
