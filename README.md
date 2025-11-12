@@ -11,7 +11,7 @@
 
 ### 原项目信息
 - **原项目地址**: https://github.com/WEIFENG2333/VideoCaptioner
-- **原作者**: Weifeng
+- **原作者**: WEIFENG2333
 
 ### 本项目修改
 由于原项目只支持windows，本版本是在原VideoCaptioner项目基础上进行修改的Linux适配版本：
