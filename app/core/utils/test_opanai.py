@@ -1,7 +1,30 @@
 from typing import Literal, Optional
 
-
+import httpx
 import openai
+import os
+
+
+def get_http_client():
+    """获取配置了代理的HTTP客户端"""
+    # 检查系统代理设置
+    proxy = None
+
+    if os.environ.get('http_proxy'):
+        proxy = os.environ['http_proxy']
+    elif os.environ.get('https_proxy'):
+        proxy = os.environ['https_proxy']
+
+    # 如果有代理设置，创建代理客户端
+    if proxy:
+        try:
+            return httpx.Client(proxy=proxy, timeout=30)
+        except Exception as e:
+            print(f"代理配置失败，使用无代理连接: {e}")
+            return httpx.Client(timeout=30)
+
+    # 无代理设置，但允许httpx自动检测环境变量
+    return httpx.Client(timeout=30, trust_env=True)
 
 
 def test_openai(
@@ -19,9 +42,15 @@ def test_openai(
     str: 错误信息或者AI助手的回复
     """
     try:
+        # 创建配置了代理的HTTP客户端
+        http_client = get_http_client()
+
         # 创建OpenAI客户端并发送请求到OpenAI API
         response = openai.OpenAI(
-            base_url=base_url, api_key=api_key, timeout=10
+            base_url=base_url,
+            api_key=api_key,
+            timeout=10,
+            http_client=http_client
         ).chat.completions.create(
             model=model,
             messages=[
@@ -39,9 +68,15 @@ def test_openai(
 
 def get_openai_models(base_url, api_key):
     try:
+        # 创建配置了代理的HTTP客户端
+        http_client = get_http_client()
+
         # 创建OpenAI客户端并获取模型列表
         models = openai.OpenAI(
-            base_url=base_url, api_key=api_key, timeout=5
+            base_url=base_url,
+            api_key=api_key,
+            timeout=5,
+            http_client=http_client
         ).models.list()
 
         # 根据不同模型设置权重进行排序
