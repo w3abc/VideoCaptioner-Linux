@@ -43,6 +43,7 @@
 - Python 3.8+
 - Python venv模块（用于创建虚拟环境）
 - FFmpeg（用于音视频处理，界面字幕预览渲染）
+- aria2c（用于多线程下载Faster Whisper程序和模型）
 
 ### 安装步骤
 
@@ -51,19 +52,19 @@
    ```bash
    # Ubuntu/Debian
    sudo apt update
-   sudo apt install python3 python3-pip python3-venv ffmpeg
+   sudo apt install python3 python3-pip python3-venv ffmpeg aria2
 
    # CentOS/RHEL 8/9
-   sudo dnf install python3 python3-pip python3-venv
+   sudo dnf install python3 python3-pip python3-venv aria2
    # 如果CentOS/RHEL 7
    sudo yum install python3 python3-pip
-   sudo yum install python3-venv  # 需要EPEL源
+   sudo yum install python3-venv aria2  # 需要EPEL源
 
    # Arch Linux
-   sudo pacman -S python python-pip ffmpeg
+   sudo pacman -S python python-pip ffmpeg aria2
 
    # openSUSE
-   sudo zypper install python3 python3-pip python3-venv ffmpeg
+   sudo zypper install python3 python3-pip python3-venv ffmpeg aria2
    ```
 
 2. **克隆项目**
@@ -147,12 +148,16 @@ VideoCaptioner/
 
    # 检查FFmpeg是否安装
    ffmpeg --version
+
+   # 检查aria2c是否安装
+   aria2c --version
    ```
 
 2. **常见问题解决**：
    - 如果`python3 -m venv`提示找不到模块，请安装`python3-venv`
    - 如果pip安装依赖时出现权限问题，确保使用了虚拟环境
    - 如果FFmpeg未找到，请按照上面的安装命令安装
+   - 如果下载Faster Whisper时提示"没有那个文件或目录: 'aria2c'"，请安装`aria2`
 
 3. **查看日志文件**：
    - 查看AppData/logs/目录下的日志文件获取详细错误信息
