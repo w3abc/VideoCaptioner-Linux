@@ -47,33 +47,13 @@
 
 ### 安装步骤
 
-1. **安装系统依赖**
-
-   ```bash
-   # Ubuntu/Debian
-   sudo apt update
-   sudo apt install python3 python3-pip python3-venv ffmpeg aria2
-
-   # CentOS/RHEL 8/9
-   sudo dnf install python3 python3-pip python3-venv aria2
-   # 如果CentOS/RHEL 7
-   sudo yum install python3 python3-pip
-   sudo yum install python3-venv aria2  # 需要EPEL源
-
-   # Arch Linux
-   sudo pacman -S python python-pip ffmpeg aria2
-
-   # openSUSE
-   sudo zypper install python3 python3-pip python3-venv ffmpeg aria2
-   ```
-
-2. **克隆项目**
+1. **克隆项目**
    ```bash
    git clone https://github.com/WEIFENG2333/VideoCaptioner.git
    cd VideoCaptioner
    ```
 
-3. **运行程序**
+2. **运行程序**
    ```bash
    chmod +x run.sh
    ./run.sh
